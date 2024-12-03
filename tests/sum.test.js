@@ -19,8 +19,21 @@ test("handles newlines between numbers", () => {
   expect(add("4\n5\n6")).toBe(15);
 });
 
+test("supports different delimiters", () => {
+  expect(add("//;\n1;2")).toBe(3);
+  expect(add("//a\n1a2a3")).toBe(6);
+});
+
 function add(numbers) {
   if (!numbers) return 0;
-  const parts = numbers.split(/,|\n/);
+
+  let delimiter = /,|\n/;
+  if (numbers.startsWith("//")) {
+    const parts = numbers.split("\n");
+    delimiter = new RegExp(parts[0].slice(2)); // Extract custom delimiter
+    numbers = parts[1];
+  }
+
+  const parts = numbers.split(delimiter);
   return parts.reduce((sum, num) => sum + parseInt(num), 0);
 }
