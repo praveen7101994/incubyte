@@ -24,6 +24,11 @@ test("supports different delimiters", () => {
   expect(add("//a\n1a2a3")).toBe(6);
 });
 
+test("throws an exception for negative numbers", () => {
+  expect(() => add("1,-1")).toThrow("negative numbers not allowed: -1");
+  expect(() => add("1,-1,2,-3")).toThrow("negative numbers not allowed: -1,-3");
+});
+
 function add(numbers) {
   if (!numbers) return 0;
 
@@ -35,5 +40,11 @@ function add(numbers) {
   }
 
   const parts = numbers.split(delimiter);
+  const nums = parts.map((num) => parseInt(num));
+  const negativeNums = nums.filter((num) => num < 0);
+
+  if (negativeNums.length > 0) {
+    throw new Error(`negative numbers not allowed: ${negativeNums.join(",")}`);
+  }
   return parts.reduce((sum, num) => sum + parseInt(num), 0);
 }
