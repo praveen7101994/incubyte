@@ -14,8 +14,13 @@ test("returns the sum of two numbers", () => {
   expect(add("10,20")).toBe(30);
 });
 
+test("handles newlines between numbers", () => {
+  expect(add("1\n2,3")).toBe(6);
+  expect(add("4\n5\n6")).toBe(15);
+});
+
 function add(numbers) {
   if (!numbers) return 0;
-  const parts = numbers.split(",");
+  const parts = numbers.split(/,|\n/);
   return parts.reduce((sum, num) => sum + parseInt(num), 0);
 }
